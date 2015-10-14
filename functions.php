@@ -4,10 +4,26 @@
 	$database = "if15_hendrik7";
 	
 	
-	function getCarData(){
+	function getCarData($keyword=""){
+		
+		$search = "%%";
+		
+		if($keyword == ""){
+			//ei otsi midagi
+			echo "Ei otsi";
+		}else{
+			//otsin
+			echo "Otsin ";
+			$search= "%".$keyword."%";
+		}
+		
+		
 		
 		$mysqli = new mysqli($GLOBALS["servername"], $GLOBALS["server_username"], $GLOBALS["server_password"], $GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT id, user_id, number_plate, color from car_plates WHERE deleted IS NULL ");
+		$stmt = $mysqli->prepare("SELECT id, user_id, number_plate, color from car_plates WHERE deleted IS NULL AND
+		(number_plate LIKE ? OR color LIKE ?)");
+		echo $mysqli->error;
+		$stmt->bind_param("ss", $search, $search);
 		$stmt->bind_result($id, $user_id_from_database, $number_plate, $color);
 		$stmt->execute();
 		
